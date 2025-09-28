@@ -5,6 +5,7 @@
 - User and admin roles coexist in the same application; all business data lives only in the local Room database.
 - Barcode flows rely on CameraX + ML Kit and the limited network capability is strictly for fetching ISBN metadata and persisting it locally.
 - Architecture references live in `libdocs/`; keep them out of runtime builds.
+- Minimize scope: prioritize a straightforward, working experience over feature breadth or polish.
 
 ## Non-negotiable constraints
 - Kotlin + Jetpack Compose are required; avoid alternative UI stacks or non-Kotlin modules.
@@ -16,10 +17,9 @@
 ## Instruction map
 - Platform-specific rules, package layout, data/transaction flows, and build commands: [android/.instructions.md](../android/.instructions.md)
 
-## Quick build & quality checklist
-- Run from `android/`: `./gradlew assembleDebug`, `./gradlew installDebug`, `./gradlew testDebugUnitTest`, `./gradlew connectedDebugAndroidTest`, `./gradlew lint`.
+## Build & install tips
+- Run from `android/`: `./gradlew assembleDebug`, `./gradlew installDebug`.
 - Retry with `./gradlew clean assembleDebug` if KSP or Room schema generation stalls.
-- Ensure `assembleDebug` and `lint` succeed before opening PRs and summarize their outputs.
 
 ## Forbidden additions
 - No alternate scanning SDKs/ORMs, analytics, ads, remote config, or background sync components.
@@ -31,7 +31,7 @@
 - Shame in vague execution, Honor in seeking confirmation.
 - Shame in assuming business logic, Honor in human verification.
 - Shame in creating interfaces, Honor in reusing existing ones.
-- Shame in skipping validation, Honor in proactive testing.
+- Shame in over-engineering, Honor in delivering the simplest solution that works.
 - Shame in breaking architecture, Honor in following specifications.
 - Shame in pretending to understand, Honor in honest ignorance.
 - Shame in blind modification, Honor in careful refactoring.

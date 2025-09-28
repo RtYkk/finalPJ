@@ -58,6 +58,8 @@ class RoomInventoryRepository(
         }
     }
 
+    override suspend fun fetchLoan(loanId: Long): Loan? = loanDao.getById(loanId)?.toModel()
+
     override suspend fun upsertPatrons(vararg patrons: Patron) {
         if (patrons.isEmpty()) return
         database.withTransaction {

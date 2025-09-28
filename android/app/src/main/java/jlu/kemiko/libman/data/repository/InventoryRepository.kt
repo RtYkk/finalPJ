@@ -17,6 +17,8 @@ interface InventoryRepository {
 
     suspend fun recordLoans(vararg loans: Loan)
 
+    suspend fun fetchLoan(loanId: Long): Loan?
+
     suspend fun upsertPatrons(vararg patrons: Patron)
 
     suspend fun fetchPatron(studentId: String): Patron?
