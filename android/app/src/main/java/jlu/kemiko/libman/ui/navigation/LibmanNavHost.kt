@@ -20,6 +20,7 @@ import jlu.kemiko.libman.ui.components.LibmanStatusBadge
 import jlu.kemiko.libman.ui.components.LibmanStatusStyle
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.dashboard.DashboardRoute
+import jlu.kemiko.libman.ui.inventory.BookCatalogRoute
 import jlu.kemiko.libman.ui.inventory.InventoryRoute
 import jlu.kemiko.libman.ui.inventory.BookIntakeRoute
 import jlu.kemiko.libman.ui.loans.LoanScannerRoute
@@ -76,6 +77,9 @@ private fun NavGraphBuilder.inventoryGraph(navController: NavHostController) {
             onScanRequested = {
                 navController.navigate(LibmanDestination.LOANS.route)
             },
+            onViewCatalog = {
+                navController.navigate("${LibmanDestination.INVENTORY.route}/catalog")
+            },
             onIntakeRequested = { isbn ->
                 navController.navigate("${LibmanDestination.INVENTORY.route}/intake/$isbn")
             },
@@ -95,6 +99,29 @@ private fun NavGraphBuilder.inventoryGraph(navController: NavHostController) {
             },
             onBack = {
                 navController.popBackStack()
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+
+    composable("${LibmanDestination.INVENTORY.route}/catalog") {
+        BookCatalogRoute(
+            onBack = { navController.popBackStack() },
+            onAddNew = {
+                val popped = navController.popBackStack(
+                    route = LibmanDestination.INVENTORY.route,
+                    inclusive = false
+                )
+                if (!popped) {
+                    navController.navigate(LibmanDestination.INVENTORY.route) {
+                        launchSingleTop = true
+                    }
+                }
+            },
+            onEditBook = { isbn ->
+                navController.navigate("${LibmanDestination.INVENTORY.route}/intake/$isbn") {
+                    launchSingleTop = true
+                }
             },
             modifier = Modifier.fillMaxSize()
         )

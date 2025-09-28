@@ -29,6 +29,7 @@ import jlu.kemiko.libman.ui.components.LibmanPrimaryButton
 import jlu.kemiko.libman.ui.components.LibmanSecondaryButton
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.theme.LibmanTheme
+import kotlinx.coroutines.flow.collectLatest
 
 private const val SCAN_RESULT_KEY = "scanned_isbn"
 private const val BOOK_SAVED_KEY = "inventory_saved_isbn"
@@ -37,6 +38,7 @@ private const val BOOK_SAVED_KEY = "inventory_saved_isbn"
 fun InventoryRoute(
     savedStateHandle: SavedStateHandle,
     onScanRequested: () -> Unit,
+    onViewCatalog: () -> Unit,
     onIntakeRequested: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InventoryViewModel = viewModel()
@@ -62,7 +64,7 @@ fun InventoryRoute(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+        viewModel.events.collectLatest { event ->
             when (event) {
                 is InventoryEvent.NavigateToIntake -> onIntakeRequested(event.isbn13)
             }
@@ -74,6 +76,7 @@ fun InventoryRoute(
         onIsbnChange = viewModel::onIsbnChange,
         onSubmit = viewModel::submit,
         onScanRequested = onScanRequested,
+        onViewCatalog = onViewCatalog,
         onDismissSuccess = viewModel::clearSuccessMessage,
         modifier = modifier
     )
@@ -85,6 +88,7 @@ private fun InventoryScreen(
     onIsbnChange: (String) -> Unit,
     onSubmit: () -> Unit,
     onScanRequested: () -> Unit,
+    onViewCatalog: () -> Unit,
     onDismissSuccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -154,6 +158,12 @@ private fun InventoryScreen(
                     enabled = state.isbnInput.isNotBlank(),
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                LibmanSecondaryButton(
+                    text = "查看馆藏列表",
+                    onClick = onViewCatalog,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
 
@@ -203,6 +213,7 @@ private fun InventoryScreenPreview() {
             onIsbnChange = {},
             onSubmit = {},
             onScanRequested = {},
+            onViewCatalog = {},
             onDismissSuccess = {}
         )
     }
@@ -217,6 +228,7 @@ private fun InventoryScreenSuccessPreview() {
             onIsbnChange = {},
             onSubmit = {},
             onScanRequested = {},
+            onViewCatalog = {},
             onDismissSuccess = {}
         )
     }
