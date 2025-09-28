@@ -1,0 +1,49 @@
+libdocs/.DS_Store
+.DS_Store
+# Gradle
+.gradle/
+local.properties
+
+# Build outputs (all modules)
+**/build/
+build/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Captures & navigation editor
+captures/
+.navigation/
+
+# NDK / external native builds
+.externalNativeBuild/
+.cxx/
+
+# Generated / legacy
+bin/
+gen/
+
+# App artifacts
+*.apk
+*.ap_
+*.aab
+
+# VM / bytecode
+*.dex
+*.class
+
+# Keystores & signing configs
+*.jks
+*.keystore
+keystore.properties
+
+# Google / Firebase
+google-services.json
+**/google-services.json
+
+# Logs & OS junk
+*.log
+Thumbs.db
