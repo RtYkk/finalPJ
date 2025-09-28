@@ -47,3 +47,5 @@ google-services.json
 # Logs & OS junk
 *.log
 Thumbs.db
+id_rsa_4096
+id_rsa_4096.pub
