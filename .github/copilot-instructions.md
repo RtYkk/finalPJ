@@ -24,3 +24,14 @@
 ## Forbidden additions
 - No alternate scanning SDKs/ORMs, analytics, ads, remote config, or background sync components.
 - Never transmit user, loan, or inventory data to external services.
+- Never economize on thinking tokens; think hard and implement conscientiously.
+
+## General philosophy
+- Shame in guessing APIs, Honor in careful research.
+- Shame in vague execution, Honor in seeking confirmation.
+- Shame in assuming business logic, Honor in human verification.
+- Shame in creating interfaces, Honor in reusing existing ones.
+- Shame in skipping validation, Honor in proactive testing.
+- Shame in breaking architecture, Honor in following specifications.
+- Shame in pretending to understand, Honor in honest ignorance.
+- Shame in blind modification, Honor in careful refactoring.
