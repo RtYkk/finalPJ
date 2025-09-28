@@ -18,7 +18,9 @@ import jlu.kemiko.libman.ui.components.LibmanStatusBadge
 import jlu.kemiko.libman.ui.components.LibmanStatusStyle
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.dashboard.DashboardRoute
+import jlu.kemiko.libman.ui.inventory.InventoryRoute
 import jlu.kemiko.libman.ui.loans.LoanScannerRoute
+import jlu.kemiko.libman.ui.students.StudentsManagementRoute
 import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 /**
@@ -28,6 +30,7 @@ enum class LibmanDestination(val route: String) {
     DASHBOARD("dashboard"),
     INVENTORY("inventory"),
     LOANS("loans"),
+    STUDENTS("students"),
     SETTINGS("settings")
 }
 
@@ -41,31 +44,57 @@ fun LibmanNavHost(
         startDestination = LibmanDestination.DASHBOARD.route,
         modifier = modifier
     ) {
-        dashboardGraph()
-        inventoryGraph()
-        loansGraph()
+        dashboardGraph(navController)
+        inventoryGraph(navController)
+        loansGraph(navController)
+        studentsGraph()
         settingsGraph()
     }
 }
 
-private fun NavGraphBuilder.dashboardGraph() {
+private fun NavGraphBuilder.dashboardGraph(navController: NavHostController) {
     composable(LibmanDestination.DASHBOARD.route) {
-        DashboardRoute(modifier = Modifier.fillMaxSize())
-    }
-}
-
-private fun NavGraphBuilder.inventoryGraph() {
-    composable(LibmanDestination.INVENTORY.route) {
-        PlaceholderScreen(
-            title = "Inventory",
-            description = "Catalog browsing, intake, and stock adjustments are coming soon."
+        DashboardRoute(
+            onNavigateToBooks = {
+                navController.navigate(LibmanDestination.INVENTORY.route)
+            },
+            onNavigateToStudents = {
+                navController.navigate(LibmanDestination.STUDENTS.route)
+            },
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
 
-private fun NavGraphBuilder.loansGraph() {
+private fun NavGraphBuilder.inventoryGraph(navController: NavHostController) {
+    composable(LibmanDestination.INVENTORY.route) { backStackEntry ->
+        InventoryRoute(
+            savedStateHandle = backStackEntry.savedStateHandle,
+            onScanRequested = {
+                navController.navigate(LibmanDestination.LOANS.route)
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+private fun NavGraphBuilder.loansGraph(navController: NavHostController) {
     composable(LibmanDestination.LOANS.route) {
-        LoanScannerRoute(modifier = Modifier.fillMaxSize())
+        LoanScannerRoute(
+            onIsbnConfirmed = { isbn ->
+                navController.previousBackStackEntry?.savedStateHandle?.set("scanned_isbn", isbn)
+            },
+            onClose = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+private fun NavGraphBuilder.studentsGraph() {
+    composable(LibmanDestination.STUDENTS.route) {
+        StudentsManagementRoute(modifier = Modifier.fillMaxSize())
     }
 }
 

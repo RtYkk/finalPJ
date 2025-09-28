@@ -19,17 +19,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jlu.kemiko.libman.LibmanApplication
+import jlu.kemiko.libman.ui.components.LibmanPrimaryButton
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 @Composable
 fun DashboardRoute(
+    onNavigateToBooks: () -> Unit,
+    onNavigateToStudents: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = viewModel(factory = rememberDashboardViewModelFactory())
 ) {
     val uiState by viewModel.uiState.collectAsState()
     DashboardScreen(
         state = uiState,
+        onNavigateToBooks = onNavigateToBooks,
+        onNavigateToStudents = onNavigateToStudents,
         modifier = modifier
     )
 }
@@ -48,6 +53,8 @@ private fun rememberDashboardViewModelFactory(): androidx.lifecycle.ViewModelPro
 @Composable
 private fun DashboardScreen(
     state: DashboardUiState,
+    onNavigateToBooks: () -> Unit,
+    onNavigateToStudents: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val spacing = LibmanTheme.spacing
@@ -70,6 +77,24 @@ private fun DashboardScreen(
                 },
                 style = LibmanTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing.medium)
+        ) {
+            ManagementOptionCard(
+                title = "图书管理",
+                description = "浏览、录入和调整馆藏书目。",
+                onClick = onNavigateToBooks,
+                modifier = Modifier.weight(1f)
+            )
+            ManagementOptionCard(
+                title = "学生管理",
+                description = "维护学生信息与借阅资格。",
+                onClick = onNavigateToStudents,
+                modifier = Modifier.weight(1f)
             )
         }
 
@@ -128,6 +153,39 @@ private fun DashboardScreen(
 }
 
 @Composable
+private fun ManagementOptionCard(
+    title: String,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val spacing = LibmanTheme.spacing
+    LibmanSurfaceCard(
+        modifier = modifier,
+        tonal = true
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(spacing.small)
+        ) {
+            Text(
+                text = title,
+                style = LibmanTheme.typography.titleMedium
+            )
+            Text(
+                text = description,
+                style = LibmanTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            LibmanPrimaryButton(
+                text = "进入",
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
 private fun DashboardMetricCard(
     label: String,
     value: String,
@@ -167,7 +225,9 @@ private fun DashboardScreenPreview() {
                 availableCopies = 35,
                 checkedOutCopies = 13,
                 isEmpty = false
-            )
+            ),
+            onNavigateToBooks = {},
+            onNavigateToStudents = {}
         )
     }
 }
@@ -176,6 +236,10 @@ private fun DashboardScreenPreview() {
 @Composable
 private fun DashboardScreenEmptyPreview() {
     LibmanTheme {
-        DashboardScreen(state = DashboardUiState())
+        DashboardScreen(
+            state = DashboardUiState(),
+            onNavigateToBooks = {},
+            onNavigateToStudents = {}
+        )
     }
 }

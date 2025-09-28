@@ -43,6 +43,8 @@ import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 @Composable
 fun LoanScannerRoute(
+    onIsbnConfirmed: (String) -> Unit,
+    onClose: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoanScannerViewModel = viewModel()
 ) {
@@ -121,6 +123,10 @@ fun LoanScannerRoute(
         onScanAgain = {
             viewModel.reset()
         },
+        onUseIsbn = { isbn ->
+            onIsbnConfirmed(isbn)
+            onClose()
+        },
         modifier = modifier
     )
 }
@@ -166,6 +172,7 @@ private fun LoanScannerScreen(
     previewView: PreviewView,
     onRequestPermission: () -> Unit,
     onScanAgain: () -> Unit,
+    onUseIsbn: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val spacing = LibmanTheme.spacing
@@ -207,7 +214,11 @@ private fun LoanScannerScreen(
             }
 
             is ScannerState.Success -> {
-                ScanSuccessCard(isbn = state.isbn13, onScanAgain = onScanAgain)
+                ScanSuccessCard(
+                    isbn = state.isbn13,
+                    onScanAgain = onScanAgain,
+                    onUseIsbn = onUseIsbn
+                )
             }
 
             is ScannerState.Error -> {
@@ -244,7 +255,8 @@ private fun PermissionCard(onRequestPermission: () -> Unit) {
 @Composable
 private fun ScanSuccessCard(
     isbn: String,
-    onScanAgain: () -> Unit
+    onScanAgain: () -> Unit,
+    onUseIsbn: (String) -> Unit
 ) {
     val spacing = LibmanTheme.spacing
     LibmanSurfaceCard(tonal = true) {
@@ -263,6 +275,11 @@ private fun ScanSuccessCard(
                 text = "Tap below to scan another book.",
                 style = LibmanTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            LibmanPrimaryButton(
+                text = "Use this ISBN",
+                onClick = { onUseIsbn(isbn) },
+                modifier = Modifier.fillMaxWidth()
             )
             LibmanPrimaryButton(
                 text = "Scan another",
@@ -319,7 +336,8 @@ private fun LoanScannerPreview() {
             hasPermission = true,
             previewView = PreviewView(LocalContext.current),
             onRequestPermission = {},
-            onScanAgain = {}
+            onScanAgain = {},
+            onUseIsbn = {}
         )
     }
 }
@@ -333,7 +351,8 @@ private fun LoanScannerSuccessPreview() {
             hasPermission = true,
             previewView = PreviewView(LocalContext.current),
             onRequestPermission = {},
-            onScanAgain = {}
+            onScanAgain = {},
+            onUseIsbn = {}
         )
     }
 }
@@ -347,7 +366,8 @@ private fun LoanScannerPermissionPreview() {
             hasPermission = false,
             previewView = PreviewView(LocalContext.current),
             onRequestPermission = {},
-            onScanAgain = {}
+            onScanAgain = {},
+            onUseIsbn = {}
         )
     }
 }
