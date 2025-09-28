@@ -17,6 +17,7 @@ import jlu.kemiko.libman.ui.components.LibmanPrimaryButton
 import jlu.kemiko.libman.ui.components.LibmanStatusBadge
 import jlu.kemiko.libman.ui.components.LibmanStatusStyle
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
+import jlu.kemiko.libman.ui.dashboard.DashboardRoute
 import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 /**
@@ -48,10 +49,7 @@ fun LibmanNavHost(
 
 private fun NavGraphBuilder.dashboardGraph() {
     composable(LibmanDestination.DASHBOARD.route) {
-        PlaceholderScreen(
-            title = "Dashboard",
-            description = "Overview cards and insights will appear here."
-        )
+        DashboardRoute(modifier = Modifier.fillMaxSize())
     }
 }
 
