@@ -12,6 +12,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -181,7 +182,7 @@ private fun LoanScannerScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = spacing.large, vertical = spacing.large),
-        verticalArrangement = Arrangement.spacedBy(spacing.large)
+        verticalArrangement = Arrangement.spacedBy(spacing.medium)
     ) {
         Text(
             text = "Scan ISBN",
@@ -196,7 +197,7 @@ private fun LoanScannerScreen(
         LibmanSurfaceCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f, fill = true),
+                .aspectRatio(16f / 9f),
             tonal = false
         ) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -206,11 +207,7 @@ private fun LoanScannerScreen(
 
         when (state) {
             ScannerState.Idle, ScannerState.Scanning -> {
-                Text(
-                    text = "Align the book's barcode within the frame.",
-                    style = LibmanTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                ScanPromptCard()
             }
 
             is ScannerState.Success -> {
@@ -222,7 +219,11 @@ private fun LoanScannerScreen(
             }
 
             is ScannerState.Error -> {
-                ScanErrorCard(message = state.message, onScanAgain = onScanAgain, onRequestPermission = onRequestPermission)
+                ScanErrorCard(
+                    message = state.message,
+                    onScanAgain = onScanAgain,
+                    onRequestPermission = onRequestPermission
+                )
             }
         }
     }
@@ -253,6 +254,26 @@ private fun PermissionCard(onRequestPermission: () -> Unit) {
 }
 
 @Composable
+private fun ScanPromptCard() {
+    val spacing = LibmanTheme.spacing
+    LibmanSurfaceCard(tonal = true) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(spacing.small)
+        ) {
+            Text(
+                text = "对准条码",
+                style = LibmanTheme.typography.titleMedium
+            )
+            Text(
+                text = "请将图书条码置于取景框中，应用会自动识别 ISBN。",
+                style = LibmanTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
 private fun ScanSuccessCard(
     isbn: String,
     onScanAgain: () -> Unit,
@@ -272,7 +293,7 @@ private fun ScanSuccessCard(
                 style = LibmanTheme.typography.headlineSmall
             )
             Text(
-                text = "Tap below to scan another book.",
+                text = "确认并返回添加页面，或继续扫码下一本。",
                 style = LibmanTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -27,11 +27,18 @@ class LoginViewModel : ViewModel() {
 
     fun onRoleSelected(role: LoginRole) {
         _uiState.update {
-            it.copy(
+            val base = it.copy(
                 selectedRole = role,
                 credentialsError = null,
                 studentIdError = null
             )
+            when (role) {
+                LoginRole.ADMIN -> base.copy(
+                    username = base.username.ifBlank { DEFAULT_ADMIN_USERNAME },
+                    password = base.password.ifBlank { DEFAULT_ADMIN_PASSWORD }
+                )
+                LoginRole.STUDENT -> base
+            }
         }
     }
 
@@ -64,7 +71,7 @@ class LoginViewModel : ViewModel() {
     private fun handleAdminLogin(state: LoginUiState) {
         val username = state.username.trim()
         val password = state.password
-        if (username.equals("admin", ignoreCase = false) && password == "admin") {
+        if (username == DEFAULT_ADMIN_USERNAME && password == DEFAULT_ADMIN_PASSWORD) {
             emitSuccess(AuthSession.Admin)
         } else {
             _uiState.update { it.copy(credentialsError = "Invalid admin credentials") }
