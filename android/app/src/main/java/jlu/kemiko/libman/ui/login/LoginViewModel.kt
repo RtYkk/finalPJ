@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<LoginEvent>(replay = 1)
+    private val _events = MutableSharedFlow<LoginEvent>(replay = 0, extraBufferCapacity = 1)
     val events: SharedFlow<LoginEvent> = _events.asSharedFlow()
 
     fun onRoleSelected(role: LoginRole) {
@@ -83,6 +83,7 @@ class LoginViewModel : ViewModel() {
     private fun emitSuccess(session: AuthSession) {
         viewModelScope.launch {
             _events.emit(LoginEvent.Success(session))
+            _uiState.value = LoginUiState()
         }
     }
 }

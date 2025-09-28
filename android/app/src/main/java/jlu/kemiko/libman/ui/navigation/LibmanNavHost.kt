@@ -18,6 +18,7 @@ import jlu.kemiko.libman.ui.components.LibmanStatusBadge
 import jlu.kemiko.libman.ui.components.LibmanStatusStyle
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.dashboard.DashboardRoute
+import jlu.kemiko.libman.ui.loans.LoanScannerRoute
 import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 /**
@@ -64,10 +65,7 @@ private fun NavGraphBuilder.inventoryGraph() {
 
 private fun NavGraphBuilder.loansGraph() {
     composable(LibmanDestination.LOANS.route) {
-        PlaceholderScreen(
-            title = "Loans",
-            description = "Scan ISBN codes to issue or receive loans once the flow ships."
-        )
+        LoanScannerRoute(modifier = Modifier.fillMaxSize())
     }
 }
 
