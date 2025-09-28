@@ -6,5 +6,5 @@ package jlu.kemiko.libman.ui.inventory
 data class InventoryUiState(
     val isbnInput: String = "",
     val errorMessage: String? = null,
-    val lastAddedIsbn: String? = null
+    val recentlySavedIsbn: String? = null
 )

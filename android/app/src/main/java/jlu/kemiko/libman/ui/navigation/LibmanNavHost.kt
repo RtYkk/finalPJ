@@ -13,12 +13,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import jlu.kemiko.libman.ui.components.LibmanPrimaryButton
 import jlu.kemiko.libman.ui.components.LibmanStatusBadge
 import jlu.kemiko.libman.ui.components.LibmanStatusStyle
 import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.dashboard.DashboardRoute
 import jlu.kemiko.libman.ui.inventory.InventoryRoute
+import jlu.kemiko.libman.ui.inventory.BookIntakeRoute
 import jlu.kemiko.libman.ui.loans.LoanScannerRoute
 import jlu.kemiko.libman.ui.students.StudentsManagementRoute
 import jlu.kemiko.libman.ui.theme.LibmanTheme
@@ -72,6 +75,26 @@ private fun NavGraphBuilder.inventoryGraph(navController: NavHostController) {
             savedStateHandle = backStackEntry.savedStateHandle,
             onScanRequested = {
                 navController.navigate(LibmanDestination.LOANS.route)
+            },
+            onIntakeRequested = { isbn ->
+                navController.navigate("${LibmanDestination.INVENTORY.route}/intake/$isbn")
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+
+    composable(
+        route = "${LibmanDestination.INVENTORY.route}/intake/{isbn}",
+        arguments = listOf(navArgument("isbn") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val isbn = backStackEntry.arguments?.getString("isbn") ?: return@composable
+        BookIntakeRoute(
+            isbn13 = isbn,
+            onSaved = { savedIsbn ->
+                navController.previousBackStackEntry?.savedStateHandle?.set("inventory_saved_isbn", savedIsbn)
+            },
+            onBack = {
+                navController.popBackStack()
             },
             modifier = Modifier.fillMaxSize()
         )

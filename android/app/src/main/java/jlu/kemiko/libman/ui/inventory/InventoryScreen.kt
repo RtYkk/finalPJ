@@ -31,22 +31,41 @@ import jlu.kemiko.libman.ui.components.LibmanSurfaceCard
 import jlu.kemiko.libman.ui.theme.LibmanTheme
 
 private const val SCAN_RESULT_KEY = "scanned_isbn"
+private const val BOOK_SAVED_KEY = "inventory_saved_isbn"
 
 @Composable
 fun InventoryRoute(
     savedStateHandle: SavedStateHandle,
     onScanRequested: () -> Unit,
+    onIntakeRequested: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InventoryViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scannedIsbnFlow = savedStateHandle.getStateFlow<String?>(SCAN_RESULT_KEY, null)
     val scannedIsbn by scannedIsbnFlow.collectAsState()
+    val savedIsbnFlow = savedStateHandle.getStateFlow<String?>(BOOK_SAVED_KEY, null)
+    val savedIsbn by savedIsbnFlow.collectAsState()
 
     LaunchedEffect(scannedIsbn) {
         scannedIsbn?.let { isbn ->
             viewModel.applyScannedIsbn(isbn)
             savedStateHandle[SCAN_RESULT_KEY] = null
+        }
+    }
+
+    LaunchedEffect(savedIsbn) {
+        savedIsbn?.let { isbn ->
+            viewModel.showBookSaved(isbn)
+            savedStateHandle[BOOK_SAVED_KEY] = null
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is InventoryEvent.NavigateToIntake -> onIntakeRequested(event.isbn13)
+            }
         }
     }
 
@@ -138,7 +157,7 @@ private fun InventoryScreen(
             }
         }
 
-        state.lastAddedIsbn?.let { isbn ->
+        state.recentlySavedIsbn?.let { isbn ->
             LibmanSurfaceCard(
                 modifier = Modifier.fillMaxWidth(),
                 tonal = true
@@ -147,12 +166,12 @@ private fun InventoryScreen(
                     verticalArrangement = Arrangement.spacedBy(spacing.small)
                 ) {
                     Text(
-                        text = "已添加",
+                        text = "已保存",
                         style = LibmanTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "ISBN $isbn 已加入馆藏。本地详情配置即将接入。",
+                        text = "ISBN $isbn 已成功写入馆藏，继续录入更多图书吧。",
                         style = LibmanTheme.typography.bodyMedium
                     )
                     Row(
@@ -194,7 +213,7 @@ private fun InventoryScreenPreview() {
 private fun InventoryScreenSuccessPreview() {
     LibmanTheme {
         InventoryScreen(
-            state = InventoryUiState(lastAddedIsbn = "9781234567890"),
+            state = InventoryUiState(recentlySavedIsbn = "9781234567890"),
             onIsbnChange = {},
             onSubmit = {},
             onScanRequested = {},
