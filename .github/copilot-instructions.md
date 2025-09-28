@@ -25,6 +25,7 @@
 - No alternate scanning SDKs/ORMs, analytics, ads, remote config, or background sync components.
 - Never transmit user, loan, or inventory data to external services.
 - Never economize on thinking tokens; think hard and implement conscientiously.
+- Do not author, retain, or request automated tests of any kind; focus solely on functional runtime code.
 
 ## General philosophy
 - Shame in guessing APIs, Honor in careful research.
