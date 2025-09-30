@@ -13,7 +13,7 @@ internal interface GoogleBooksApi {
     ): GoogleBooksResponse
 
     companion object {
-        private const val FIELDS = "items(volumeInfo/title,volumeInfo/authors)"
+        private const val FIELDS = "items(volumeInfo/title,volumeInfo/authors,volumeInfo/description,volumeInfo/imageLinks/thumbnail)"
     }
 }
 
@@ -27,5 +27,11 @@ data class GoogleBooksVolume(
 
 data class GoogleBooksVolumeInfo(
     val title: String?,
-    val authors: List<String>?
+    val authors: List<String>?,
+    val description: String?,
+    val imageLinks: GoogleBooksImageLinks?
+)
+
+data class GoogleBooksImageLinks(
+    val thumbnail: String?
 )

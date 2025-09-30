@@ -153,6 +153,8 @@ class BookIntakeViewModel(
                 isbn13 = state.isbn13,
                 title = title,
                 author = author,
+                description = null,
+                coverImageUrl = null,
                 copyCount = copyCount,
                 availableCount = availableCount,
                 metadataFetchedAt = metadataFetchedAt

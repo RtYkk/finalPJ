@@ -17,6 +17,9 @@ data class BookEntity(
     val isbn13: String,
     val title: String,
     val author: String?,
+    val description: String?,
+    @ColumnInfo(name = "cover_image_url")
+    val coverImageUrl: String?,
     @ColumnInfo(name = "copy_count")
     val copyCount: Int,
     @ColumnInfo(name = "available_count")

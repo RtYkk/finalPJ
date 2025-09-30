@@ -21,7 +21,8 @@ internal class GoogleBooksIsbnLookupService(
             author = volumeInfo.authors?.joinToString(separator = ", "),
             publisher = null,
             publishedDate = null,
-            coverImageUrl = null
+            description = volumeInfo.description,
+            coverImageUrl = volumeInfo.imageLinks?.thumbnail
         )
     }
 }

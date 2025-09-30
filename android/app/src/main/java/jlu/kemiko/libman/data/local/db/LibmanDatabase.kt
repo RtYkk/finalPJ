@@ -27,5 +27,5 @@ abstract class LibmanDatabase : RoomDatabase() {
 }
 
 object LibmanDatabaseInfo {
-    const val VERSION = 1
+    const val VERSION = 2
 }
